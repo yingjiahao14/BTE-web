@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Belief-Trajectory Energy: Measuring the Path to a Prediction</title>
+  <meta name="description" content="Belief-Trajectory Energy (BTE) characterizes an input by the layerwise predictive revisions it induces in a language model. Explore real beliefs forming layer by layer, token-level case studies, and results on difficulty measurement, human–LLM review detection and generator attribution.">
+  <link rel="canonical" href="https://yingjiahao14.github.io/BTE-web/">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Belief-Trajectory Energy: Measuring the Path to a Prediction">
+  <meta property="og:description" content="A model-grounded measure of how an input revises a language model's beliefs across layers, with interactive token-level case studies.">
+  <meta property="og:image" content="https://yingjiahao14.github.io/BTE-web/img/overview.png">
+  <meta property="og:url" content="https://yingjiahao14.github.io/BTE-web/">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" media="(prefers-color-scheme:dark)" href="img/favicon-dark.png" type="image/png">
+  <link rel="icon" media="(prefers-color-scheme:light)" href="img/favicon.png" type="image/png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem("theme"); } catch (e) {}
+      var theme = saved || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      var q = /[?&]theme=(dark|light)\b/.exec(location.search);
+      if (q) theme = q[1];
+      document.documentElement.setAttribute("data-theme", theme);
+      document.documentElement.classList.add("js");
+    })();
+  </script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" crossorigin="anonymous">
+  <link rel="stylesheet" href="bte.css">
+  <script>
+    (function () {
+      var OPT = { delimiters: [{ left: '$$', right: '$$', display: true }, { left: '\\[', right: '\\]', display: true }, { left: '$', right: '$', display: false }, { left: '\\(', right: '\\)', display: false }], throwOnError: false, strict: 'ignore' };
+      window.BTE_MATH = function (el) {
+        if (!window.renderMathInElement || !el) return;
+        var list = el.classList && el.classList.contains('tex') ? [el] : el.querySelectorAll('.tex');
+        for (var i = 0; i < list.length; i++) { if (list[i].getAttribute('data-tex') === '1') continue; try { renderMathInElement(list[i], OPT); list[i].setAttribute('data-tex', '1'); } catch (e) {} }
+      };
+      window.BTE_MATH_READY = function () { window.BTE_MATH(document.body); };
+    })();
+  </script>
+</head>
+<body>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+    <span class="icon-moon">&#x263E;&#xFE0E;</span><span class="icon-sun">&#x2600;&#xFE0E;</span>
+  </button>
+
+  <div class="wrap">
+    <nav class="topnav" aria-label="Sections">
+      <a class="home" href="https://jhying.org/">&larr; jhying.org</a>
+      <a href="#method">Method</a>
+      <a href="#difficulty">Difficulty</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#attribution">Attribution</a>
+      <a href="#familiarity">Familiarity</a>
+    </nav>
+
+    <header class="hero">
+      <p class="eyebrow">Preprint &middot; 2026</p>
+      <h1 class="title">Belief-Trajectory Energy</h1>
+      <p class="subtitle">Measuring the Path to a Prediction</p>
+      <p class="lede">Learned models as measuring instruments: BTE characterizes an input by the belief revisions it induces across a language model's layers, so the model's own forward pass becomes a measurement of the data it reads. Four settings from the paper, each with a case study.</p>
+      <!-- TODO: add co-authors and their affiliations before publishing. -->
+      <nav class="links">
+        <span class="pill disabled" title="Code and configurations will be released upon publication">Code &middot; upon publication</span>
+        <a class="pill" href="#bibtex">BibTeX</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="method" class="section compact">
+        <h2><span class="num">01</span>What BTE measures</h2>
+        <p class="intro">Every intermediate state of a Transformer can be read through the model's own output head as a next-token distribution, the model's belief at that depth. BTE scores how much consecutive layers revise that belief (Jensen&ndash;Shannon divergence) and keeps the sequence across depth. Averaged over the tokens of a response it is a 32-number profile; the mean over the central window (layers 12&ndash;19 for a 32-layer scorer) is the training-free scalar used below.</p>
+        <div class="card-xp" id="method-fig"></div>
+      </section>
+
+      <section id="difficulty" class="section">
+        <h2><span class="num">02</span>Difficulty</h2>
+        <p class="intro">If BTE captures the predictive revisions a computation induces, more challenging inputs should elicit stronger revisions. So reference solutions are scored given their problem, and the mean BTE over layers 12&ndash;19 is read off as a scalar, with no training. Across the 500 MATH-500 solutions it rises with the human difficulty level, and the gap sits in the middle layers.</p>
+        <figure class="fig">
+          <div class="fig-head"><div class="legend" id="set-diff-pop-legend"></div></div>
+          <div class="chart" id="set-diff-pop"></div>
+          <div class="mid-chips" id="set-diff-mids"></div>
+          <figcaption>Mean depth profile per MATH-500 level, Llama-3.1-8B-Instruct, over the middle window 12&ndash;19 (switch to 8&ndash;23 to see the levels converge again after layer 19); the chips give each level's middle-window mean.</figcaption>
+        </figure>
+        <article class="case">
+          <div class="case-head">
+            <h3>Case: an easy and a hard solution of the same subject</h3>
+            <p>Five pairs of official MATH-500 solutions, each a level-1 item against a level-5 item of the same subject and of comparable length. The first pair is the one whose level-5 profile lies above the level-1 profile at the most layer transitions; the other four are the median pair of their subject. Pick a row.</p>
+          </div>
+          <div id="set-diff-pair"></div>
+        </article>
+        <article class="case">
+          <div class="case-head">
+            <h3>Case: one theory, five proofs</h3>
+            <p>ProofWriter theory AttNeg-OWA-D5-524. The facts and rules are the same for all five queries; the query moves from one inference step (Harry is big) to five (Harry is green), and each official proof extends the previous one by a step. To decide: does the average next-token loss follow the number of inference steps, and does BTE?</p>
+          </div>
+          <div id="case-proof"></div>
+        </article>
+        <article class="case">
+          <div class="case-head">
+            <h3>Case: wording and length controls</h3>
+          </div>
+          <div id="case-controls"></div>
+        </article>
+      </section>
+
+      <section id="reviews" class="section">
+        <h2><span class="num">03</span>Human vs LLM reviews</h2>
+        <p class="intro">A scalar discards where in depth the revisions occur. Does the full depth profile carry finer structure about an input, such as who wrote it? To find out, human and LLM reviews of the same ICLR and NeurIPS papers are scored with the paper in the context, and a logistic regression on the 32-number profile is the whole detector.</p>
+        <article class="case">
+          <div class="case-head">
+            <h3>Case: the same paper, a human review and a model's</h3>
+            <p>Five papers from the paper's blind human evaluation. Each pair is the human review and one model's review of the same paper.</p>
+          </div>
+          <div id="case-detect"></div>
+        </article>
+        <figure class="fig">
+          <div class="fig-head">
+            <div class="seg" id="gen-scorer" role="group" aria-label="Scoring model">
+              <button type="button" data-scorer="llama" aria-pressed="true">Llama-3.1-8B-Instruct</button>
+              <button type="button" data-scorer="qwen" aria-pressed="false">Qwen-3.5-9B</button>
+            </div>
+            <div class="legend" id="gen-legend" aria-label="Generators"></div>
+          </div>
+          <div id="chart-generators" class="chart"></div>
+          <figcaption><strong>The same comparison over 11,200 review pairs.</strong> Depth profile of generated reviews relative to human reviews of the same papers (%). Legacy generators (solid) sit below human reviews through the middle layers; newer ones (dashed) close the gap and Claude Opus 5 reverses it. Blind human preference correlates with this mid-layer shift at &rho; = 0.857.</figcaption>
+        </figure>
+      </section>
+
+      <section id="attribution" class="section">
+        <h2><span class="num">04</span>Generator attribution</h2>
+        <p class="intro">The profile tells human from LLM; can it also tell which model? An eight-way classifier (Human + seven generators) is trained on the per-layer profile, then on per-layer statistics of the token-level BTE that averaging had removed. The map is the paper's Figure 5: LDA axes fitted on calibration papers, held-out reviews laid out with t-SNE.</p>
+        <div class="card-xp" id="set-attr"></div>
+        <article class="case">
+          <div class="case-head">
+            <h3>Case: two reviews the per-layer mean cannot tell apart</h3>
+            <p>Same paper, two sources. The 32-D classifier sees one mean per layer; the 160-D one also sees how the token energies spread at each layer, and the 352-D one adds where in the review they fall. To decide: which of the eight sources wrote each review. The same five papers of the blind human evaluation, with the readers' verdicts.</p>
+          </div>
+          <div id="case-attr"></div>
+        </article>
+        <figure class="fig attr-fig">
+          <div class="fig-head">
+            <div class="seg" id="conf-scorer" role="group" aria-label="Scoring model">
+              <button type="button" data-scorer="llama" aria-pressed="true">Llama-3.1-8B</button>
+              <button type="button" data-scorer="qwen" aria-pressed="false">Qwen-3.5-9B</button>
+            </div>
+            <div class="seg" id="conf-feat" role="group" aria-label="Feature set">
+              <button type="button" data-feat="32D" aria-pressed="false">32-D profile</button>
+              <button type="button" data-feat="352D" aria-pressed="true">352-D + token statistics</button>
+            </div>
+          </div>
+          <div class="attr-body">
+            <div id="chart-attr-acc" class="chart"></div>
+            <div id="chart-confusion" class="chart"></div>
+          </div>
+          <figcaption>Left: eight-way source accuracy (%) on generated reviews from held-out papers as token-level statistics are added to the per-layer representation, both scorers. Right: confusion between true and predicted source for the selected scorer and feature set (% of each true source's held-out reviews); the residual errors are almost entirely GPT-5.5 &harr; GPT-5.6, the two sources whose clouds overlap on the map.</figcaption>
+        </figure>
+      </section>
+
+      <section id="familiarity" class="section">
+        <h2><span class="num">05</span>Where the signal comes from</h2>
+        <p class="intro">Where does the signal come from? BTE is a property of the input and of the scorer, so the scorer's familiarity with the data should move it. To see that, the text is held fixed and only the scorer changes: Llama-3.1-8B-Instruct before and after fine-tuning on PRM800K solutions, and OLMo-2-7B across its pretraining checkpoints.</p>
+        <article class="case">
+          <div class="case-head">
+            <h3>Case: the same text, before and after fine-tuning</h3>
+            <p>Llama-3.1-8B-Instruct is fine-tuned on 9,704 PRM800K trajectories, and the same text is read by the scorer before fine-tuning and after 1,000, 5,000 and 9,704 trajectories. Four kinds of text: a PRM800K trajectory in the training style, and official solutions of MATH-500, GSM8K and OlympiadBench, which the fine-tuning never saw. Nothing in the text changes; only the scorer does.</p>
+          </div>
+          <div id="case-style"></div>
+        </article>
+        <article class="case">
+          <div class="case-head">
+            <h3>Case: two solutions through pretraining</h3>
+          </div>
+          <div id="set-fam"></div>
+          <h4 class="case-sub">All 500 MATH-500 solutions</h4>
+          <div class="two-col eq pop">
+            <figure class="fig">
+              <div class="fig-head"><div class="legend" id="olmo-legend" aria-label="Checkpoints"></div></div>
+              <div id="chart-olmo-profiles" class="chart"></div>
+              <figcaption>Depth profile on MATH-500 solutions across OLMo-2-7B checkpoints, with a Gaussian-initialized model and Llama-3.1-8B for reference.</figcaption>
+            </figure>
+            <figure class="fig">
+              <div class="fig-head"><div class="legend" id="trend-legend" aria-label="Models"></div></div>
+              <div id="chart-olmo-trend" class="chart"></div>
+              <figcaption>Middle-layer BTE and its Spearman correlation with MATH level across pretraining tokens (log scale). Error bars: 95% bootstrap interval. Llama-3.1-8B, pretrained on about 15T tokens, reaches +0.36 before any instruction tuning.</figcaption>
+            </figure>
+          </div>
+        </article>
+      </section>
+
+
+    </main>
+
+    <footer>
+      &copy; 2026 Jiahao Ying &middot; <a href="https://jhying.org/">jhying.org</a>
+      <div class="bibfoot" id="paper">
+        <div class="bibwrap" id="bibtex">
+          <button class="btn" id="bib-copy" type="button">Copy</button>
+<!-- TODO: complete the author list once the paper is public. -->
+<pre class="bib" id="bib-text">@article{ying2026bte,
+  title  = {Belief-Trajectory Energy: Measuring the Path to a Prediction},
+  author = {Ying, Jiahao},
+  year   = {2026},
+  note   = {Preprint}
+}</pre>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="cases.js"></script>
+  <script src="bte.js"></script>
+  <script src="setdata.js"></script>
+  <script src="pairdata.js"></script>
+  <script src="settings.js"></script>
+  <script src="casedata.js"></script>
+  <script src="styledata.js"></script>
+  <script src="casebook.js"></script>
+  <script src="methoddata.js"></script>
+  <script src="method.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/contrib/auto-render.min.js" crossorigin="anonymous" onload="BTE_MATH_READY()"></script>
+  <script>
+    var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    function toggleTheme() {
+      var next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      var apply = function () {
+        document.documentElement.setAttribute("data-theme", next);
+        try { localStorage.setItem("theme", next); } catch (e) {}
+      };
+      if (!document.startViewTransition || reduceMotion.matches) { apply(); return; }
+      var b = document.querySelector(".theme-toggle").getBoundingClientRect();
+      var x = b.left + b.width / 2, y = b.top + b.height / 2;
+      var r = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+      document.startViewTransition(apply).ready.then(function () {
+        document.documentElement.animate(
+          { clipPath: ["circle(0px at " + x + "px " + y + "px)", "circle(" + r + "px at " + x + "px " + y + "px)"] },
+          { duration: 480, easing: "ease-in-out", pseudoElement: "::view-transition-new(root)" }
+        );
+      });
+    }
+    (function () {
+      var links = document.querySelectorAll(".topnav a[href^='#']");
+      var map = {};
+      for (var i = 0; i < links.length; i++) { map[links[i].getAttribute("href").slice(1)] = links[i]; }
+      if (!("IntersectionObserver" in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          for (var k in map) map[k].classList.toggle("current", k === e.target.id);
+        });
+      }, { rootMargin: "-40% 0px -55% 0px", threshold: 0 });
+      for (var k in map) { var s = document.getElementById(k); if (s) io.observe(s); }
+    })();
+    (function () {
+      var btn = document.getElementById("bib-copy"), pre = document.getElementById("bib-text");
+      if (!btn || !pre || !navigator.clipboard) { if (btn) btn.hidden = true; return; }
+      btn.addEventListener("click", function () {
+        navigator.clipboard.writeText(pre.textContent).then(function () {
+          btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy"; }, 1600);
+        });
+      });
+    })();
+  </script>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-F88MKW6PHD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-F88MKW6PHD');
+  </script>
+  <script>
+    var _paq = window._paq = window._paq || [];
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+    (function() {
+      var u="//analytics.jhying.org/";
+      _paq.push(['setTrackerUrl', u+'matomo.php']);
+      _paq.push(['setSiteId', '2']);
+      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+    })();
+  </script>
+</body>
+</html>
