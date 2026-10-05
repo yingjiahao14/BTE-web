@@ -279,8 +279,8 @@
       }
       g2.renders.push(draw2); draw2();
       U.legend(lg2, series2.map(function (s) { return { name: s.name, color: s.color, dash: s.dash }; }), g2);
-      html('figcaption', null, c2, 'Middle-window energy rises fifteen-fold over pretraining. The level-1 and level-5 means stay on top of each other in OLMo-2: no difficulty gradient yet, where Llama-3.1 reads the same two levels at ' + fmt(midOf(SET.difficulty.levelMean[1]), 3) + ' and ' + fmt(midOf(SET.difficulty.levelMean[5]), 3) + '.');
-      html('p', 'note tight', host, 'A level-1 and a level-5 algebra solution (MATH-500 items 2199 and 1837), read by the released OLMo-2-7B checkpoints with the problem in the context. The dashed level means show that OLMo-2 never separates level 1 from level 5 during pretraining; the fine-tuning case above shows what training on the target domain does to the same measurement.');
+      html('figcaption', null, c2, 'Middle-window energy rises fifteen-fold over pretraining. The level-1 and level-5 means stay on top of each other in OLMo-2: no difficulty gradient yet, where Llama-3.1 reads the same two levels at ' + fmt(midOf(SET.difficulty.levelMean[1]), 3) + ' and ' + fmt(midOf(SET.difficulty.levelMean[5]), 3) + ', a gap that OLMo-2 never opens in pretraining.');
+      html('p', 'note tight', host, 'A level-1 and a level-5 algebra solution (MATH-500 items 2199 and 1837), read by the released OLMo-2-7B checkpoints with the problem in the context. The dashed level means show that OLMo-2 never separates level 1 from level 5 during pretraining; the fine-tuning case above shows what training on the target domain does to the same measurement, with Llama-3.1-8B-Instruct as the scorer.');
     }
 
     function renderAll() { [renderDiffPop, renderPair, renderDetectionDumbbell, renderAttr, renderFam].forEach(function (f) { try { f(); } catch (err) { if (window.console) console.error(err); } }); }

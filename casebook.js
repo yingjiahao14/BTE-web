@@ -310,7 +310,7 @@
       var WP = wordPairs[ctlState.word], o = WP.items[0], w = WP.items[1];
       controlCard({
         title: 'Same computation, different wording',
-        question: 'What changes: who wrote the words around the same arithmetic. To decide: does the readout move with the wording as much as likelihood does?',
+        question: 'What changes: who wrote the words around the same arithmetic. To decide: does the readout move with the wording as much as the likelihood does, or does it stay where it was?',
         selCols: ['pair', 'level', 'tokens', 'Δ mid BTE', 'Δ NLL'],
         selRows: wordPairs.map(function (p) { var x = p.items[0], y = p.items[1]; return [p.subject + ' · ' + p.uid.replace('test/', '').replace('.json', '').split('/')[1], String(p.level), x.T + ' → ' + y.T, signed(100 * (y.mid / x.mid - 1), 1) + '%', signed(100 * (y.nll / x.nll - 1), 0) + '%']; }),
         selCur: ctlState.word, onPick: function (k) { ctlState.word = k; renderControls(); },
@@ -321,14 +321,14 @@
           { cells: ['middle-window BTE (nats)', fmt(o.mid, 4), fmt(w.mid, 4), { text: signed(100 * (w.mid / o.mid - 1), 2) + '%', cls: 'best' }] },
           { cells: ['final-layer NLL (nats/token)', fmt(o.nll, 3), fmt(w.nll, 3), { text: signed(100 * (w.nll / o.nll - 1), 1) + '%', cls: 'best' }] }
         ],
-        note: 'BTE is insensitive to style. Same arithmetic in different words: NLL falls by 35% (22% at the median of 500 pairs), BTE changes by 0.04% (2.3% at the median).'
+        note: 'BTE is insensitive to style. Same arithmetic in different words: NLL falls by 35% (22% at the median of 500 pairs), BTE changes by 0.04% (2.3% at the median): the same content, the same reading.'
       });
       /* length */
       var VNAME = { periodic_ab: '“abab…” repeated', repeated_word: '“the” repeated', random_words: 'random words', shuffled_tokens: 'the solution, tokens shuffled', repeated_sentence: 'one sentence repeated' };
       var EP = eqPairs[ctlState.equal], n = EP.items[0], p = EP.items[1], PP = EP.pop || E.pop, vname = VNAME[p.key] || p.key;
       controlCard({
         title: 'Same problem, same length, no content',
-        question: 'What changes: the solution is replaced by a text with no content and exactly the same token count: a repeated string, one word repeated, random words, or the solution\'s own tokens in random order. To decide: is a high BTE just long or hard-to-predict text, and does the layer window matter?',
+        question: 'What changes: the solution is replaced by a text with no content and exactly the same token count: a repeated string, one word repeated, random words, or the solution\'s own tokens in random order. To decide: is a high BTE just long or hard-to-predict text, and does the choice of layer window matter?',
         selCols: ['pair · control', 'tokens', 'Δ mid BTE', 'Δ NLL'],
         selRows: eqPairs.map(function (q) { var x = q.items[0], y = q.items[1]; return [q.id.replace('gsm8k-gsm8k-', 'GSM8K ') + ' · ' + (VNAME[y.key] || y.key), String(x.T), signed(100 * (y.mid / x.mid - 1), 0) + '%', (y.nll / x.nll >= 2 ? '×' + fmt(y.nll / x.nll, 1) : signed(100 * (y.nll / x.nll - 1), 0) + '%')]; }),
         selCur: ctlState.equal, onPick: function (k) { ctlState.equal = k; renderControls(); },
@@ -343,7 +343,7 @@
             { cells: ['final-layer NLL', fmt(n.nll, 3), fmt(p.nll, 3), dir(PP.nll)] }
           ];
         })(),
-        note: 'BTE is sensitive to content. Same length with the content removed: NLL goes down for repeated text and up for random or shuffled text, so likelihood does not see the content. The middle-window BTE falls in every case. Together with the wording control: likelihood tracks the style, BTE tracks the content.'
+        note: 'BTE is sensitive to content. Same length with the content removed: NLL goes down for repeated text and up for random or shuffled text, so likelihood does not see the content. The middle-window BTE falls in every case. Together with the wording control: likelihood tracks the style of the text, BTE tracks its content.'
       });
     }
 
@@ -418,13 +418,13 @@
       var ymax = 0; [hum, rev].forEach(function (r) { r.profile.forEach(function (v) { ymax = Math.max(ymax, v); }); });
       U.lineChart(c1, { height: 240, table: false, title: 'Depth profiles of the two reviews · ' + scorerName, subtitle: 'shaded: 12–19', margin: { r: 14 }, x: LAYER_X, y: { domain: [0, ymax * 1.12], label: 'BTE (nats)' }, bands: BAND,
         series: [hum, rev].map(function (r) { var stl = SRC_STYLE[r.source]; return { name: stl[2], color: cssVar(stl[0]), width: 2.2, points: pts(r.profile) }; }), tooltip: LAYER_TIP });
-      html('figcaption', null, f1, 'Mean elementary BTE per transition over the tokens of each review, with the parsed paper in the context' + (qwen ? '. Qwen-3.5-9B has 32 layers as well; its profiles are lower overall' : '') + '.');
+      html('figcaption', null, f1, 'Mean elementary BTE per transition over the tokens of each review, with the parsed paper in the context' + (qwen ? '. Qwen-3.5-9B has 32 layers as well; its profiles are lower overall than Llama\'s' : '') + '.');
       var K = G.contrib[st];
       var c2 = html('div', 'chart', f2);
       var detName = detState.contrib === 'bte_raw' ? 'BTE raw' : 'BTE shape';
       vbars(c2, { height: 240, values: K[detState.contrib].per, title: narrow(c2) ? 'Detector ' + st + ', ' + detName + ': logit contributions' : 'Detector ' + st + ', ' + detName + ': per-transition contribution to the logit gap', subtitle: rev.name + ' − human, sum ' + signed(K[detState.contrib].sum, 2) + (K[detState.contrib].sum > 0 ? ' → generated' : ' → human'), unit: 'logits' });
       var fc2 = html('figcaption', null, f2);
-      fc2.textContent = 'Each bar is one layer\'s share of the gap between the two scores: the detector\'s weight at that layer times the difference of the two standardized profiles there. The 32 bars add up to the logit gap; positive bars push the generated review toward “generated”, negative ones the other way.';
+      fc2.textContent = 'Each bar is one layer\'s share of the gap between the two scores: the detector\'s weight at that layer times the difference of the two standardized profiles there. The 32 bars add up to the logit gap; positive bars push the generated review toward “generated”, negative ones push it back toward “human” instead.';
       /* the aggregate, always visible */
       var A = qwen ? C.detect.qwen.auroc : C.detect.auroc, TR = { A: 'ICLR 2021 papers, three legacy generators', B: 'ICLR 2021 papers, one model family held out', C: 'eight conference-years, seven generators' };
       var wrap = table(host, [narrow(host) ? 'setting' : 'setting · calibration data', 'BTE raw', 'BTE shape', 'final likelihood'], ['A', 'B', 'C'].map(function (s) {
@@ -477,12 +477,12 @@
       var ymax = 0; reviews.forEach(function (r) { r.mean.forEach(function (v) { ymax = Math.max(ymax, v); }); });
       U.lineChart(c1, { height: 230, table: false, title: 'Average revision per layer (mean over tokens)', subtitle: 'shaded: 12–19', margin: { r: 14 }, x: LAYER_X, y: { domain: [0, ymax * 1.12], label: 'mean BTE (nats)' }, bands: BAND,
         series: reviews.map(function (r, i) { return { name: srcName(r.source), color: col(ATTR_COL[r.source]), width: 2.2, dash: i === 1 && r.source !== 'human' && reviews[0].source !== 'human', points: pts(r.mean) }; }), tooltip: LAYER_TIP });
-      html('figcaption', null, f1, 'At each layer, the average BTE over all tokens of the review: how much the belief was revised on average. These 32 numbers are the whole input of the first classifier.');
+      html('figcaption', null, f1, 'At each layer, the average BTE over all tokens of the review: how much the belief was revised on average. These 32 numbers are the whole input of the first classifier, the 32-D one.');
       var c2 = html('div', 'chart', f2);
       var top = 0; reviews.forEach(function (r) { r.sd.forEach(function (v) { top = Math.max(top, v); }); });
       U.lineChart(c2, { height: 230, table: false, title: 'Unevenness of the revision per layer (SD over tokens)', subtitle: 'shaded: 12–19', margin: { r: 14 }, x: LAYER_X, y: { domain: [0, top * 1.1], label: 'SD across tokens (nats)' }, bands: BAND,
         series: reviews.map(function (r, i) { return { name: srcName(r.source), color: col(ATTR_COL[r.source]), width: 2.2, dash: i === 1 && r.source !== 'human' && reviews[0].source !== 'human', points: pts(r.sd) }; }), tooltip: LAYER_TIP });
-      html('figcaption', null, f2, 'At each layer, the standard deviation of the same token values: how unevenly the revision is spread over the tokens. Two reviews can have the same average and a different spread; the second classifier adds this and three percentiles.');
+      html('figcaption', null, f2, 'At each layer, the standard deviation of the same token values: how unevenly the revision is spread over the tokens. Two reviews can have the same average and a different spread; the second classifier adds this spread and three percentiles of the same values.');
       var wrap = table(host, ['split', 'reviews', '32-D', '160-D', '352-D', 'final 11-D'], ['A', 'B', 'C'].map(function (s) {
         var a = [C.attr.acc[s][0], C.attr.acc[s][1], C.attr.acc[s][2], C.attr.acc[s][4]], best = Math.max.apply(null, a);
         return { cls: s === split ? 'cur' : null, cells: [narrow(host) ? s : s + ' · ' + C.attr.split[s], C.attr.n[s].toLocaleString('en-US')].concat(a.map(function (v) { return { text: fmt(v, 1) + '%', cls: v === best ? 'best' : null }; })) };
@@ -644,7 +644,7 @@
       U.lineChart(pc, { height: 240, table: false, title: 'Depth profile of this response at the four checkpoints', subtitle: 'shaded: 12–19', margin: { r: 14 }, x: LAYER_X, y: { domain: [0, 0.36], label: 'BTE (nats)' }, bands: BAND,
         series: ex.ckpts.map(function (c, i) { var on = i === st.ck; return { name: dtitle(i), color: CKC(i), width: on ? 3 : 1.3, halo: on ? 11 : 0, points: pts(c.profile) }; }), tooltip: LAYER_TIP });
       if (TC) {
-        html('p', 'note tight small', host, 'The solution cut into its steps (the labels in the text above); each row is the mean middle-window BTE of that step\'s tokens at each checkpoint. ▼ fell from the previous checkpoint, ▲ rose.');
+        html('p', 'note tight small', host, 'The solution cut into its steps (the labels in the text above); each row is the mean middle-window BTE of that step\'s tokens at each checkpoint. ▼ fell from the previous checkpoint, ▲ rose; the last column is the change from before fine-tuning to after 9,704.');
         table(host, ['step of the solution', 'before', 'after 1,000', 'after 5,000', 'after 9,704', 'change'], TC.spans.map(function (sp) {
           var cells = [sp.label + ' · tokens ' + sp.t0 + '–' + sp.t1];
           sp.byDose.forEach(function (v, i) { cells.push({ text: fmt(v, 4), mark: i ? (v > sp.byDose[i - 1] ? '▲' : '▼') : null, bad: i > 0 && v > sp.byDose[i - 1] }); });
@@ -669,7 +669,7 @@
       U.barGrid(bg, { rowLabel: 'median change after 9,704',
         cols: [{ key: 'bte', label: 'middle-window BTE', dec: 0, unit: '%', signed: true, best: 'min' }, { key: 'nll', label: 'final-layer NLL', dec: 0, unit: '%', signed: true, best: 'min', color: cssVar('--s1') }],
         rows: STYLE_ORDER.map(function (k) { var p = S.sets[k].pop; return { label: { prm800k: 'PRM800K · training style', math500: 'MATH-500', gsm8k: 'GSM8K', olympiad: 'OlympiadBench' }[k], color: cssVar(STYLE_COL[k]), hi: k === st.set, values: { bte: p.mid.medianPct[3], nll: p.nll.medianPct[3] } }; }) });
-      html('figcaption', null, f2, 'BTE falls by 17–23% for every style. NLL falls only for the training style (−44%) and rises for every official solution (+17% to +38%), MATH-500 included: likelihood follows how the text is written, BTE follows what the scorer learned.');
+      html('figcaption', null, f2, 'BTE falls by 17–23% for every style. NLL falls only for the training style (−44%) and rises for every official solution (+17% to +38%), MATH-500 included: likelihood follows how the text is written; BTE follows what the scorer learned, whatever the style.');
       if (window.BTE_MATH) window.BTE_MATH(host);
     }
 

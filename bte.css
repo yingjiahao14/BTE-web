@@ -993,3 +993,92 @@ details.style-train { margin: 1rem 0 0.4rem; }
 .bibfoot { margin-top: 1rem; text-align: left; }
 .bibfoot .bib { margin: 0 auto; max-width: 46rem; font-size: 0.78rem; }
 .bibfoot .bibwrap { max-width: 46rem; margin: 0 auto; }
+
+/* ---- section 01 · why the path: two synchronised 6 s loops; the static (reduced-motion) picture is the final state ---- */
+.brain-fig svg { display: block; width: 100%; height: auto; }
+.brain-fig .t-ttl { font-family: Inter, system-ui, sans-serif; font-size: 13px; font-weight: 600; fill: var(--text); }
+.brain-fig .t-lb { font-family: Inter, system-ui, sans-serif; font-size: 10px; fill: var(--muted); }
+.brain-fig .t-ph { font-family: Inter, system-ui, sans-serif; font-size: 11px; font-weight: 500; fill: var(--accent-strong); opacity: 0; }
+.brain-fig .t-hd { font-family: Inter, system-ui, sans-serif; font-size: 10.5px; font-weight: 600; fill: var(--text); }
+.brain-fig .t-tok { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 9.5px; fill: var(--muted); } .brain-fig .t-tok.ans { fill: var(--text); font-weight: 700; } .brain-fig .t-p { font-family: Inter, system-ui, sans-serif; font-size: 9px; fill: var(--muted); } .brain-fig .t-ans { font-weight: 700; fill: var(--text); }
+.brain-fig .row-bg { fill: var(--bg); stroke: var(--border); stroke-width: 1; } .brain-fig .seg-other { fill: var(--muted); opacity: .55; } .brain-fig .seg-rest { fill: var(--surface); } .brain-fig .lg-rest { stroke: var(--border); stroke-width: 1; } .brain-fig .cell-e .seg-ans, .brain-fig .lg-e { fill: var(--accent); } .brain-fig .cell-h .seg-ans, .brain-fig .lg-h { fill: var(--text); } .brain-fig .seg-lab { font-family: Inter, system-ui, sans-serif; font-size: 9.5px; font-weight: 600; fill: var(--bg); } .brain-fig .cell-e .rev { fill: var(--accent); } .brain-fig .cell-h .rev { fill: var(--text); opacity: .75; }
+.brain-fig .cell { transform-box: fill-box; transform-origin: 0 50%; }
+p, figcaption, li, .intro, .note { text-wrap: pretty; }
+.brain-fig > .fig > figcaption { margin-top: 0.55rem; }
+.brain-fig .brain { fill: var(--surface); stroke: var(--muted); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.brain-fig .scene .t-lb { paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+.brain-fig .axis { fill: none; stroke: var(--border); stroke-width: 1.5; stroke-linecap: round; }
+.brain-fig .cardbg { fill: var(--bg); stroke: var(--border); stroke-width: 1.4; } .brain-fig .cat { fill: var(--text); opacity: .85; }
+.brain-fig .occl { stroke: var(--muted); stroke-width: 5; opacity: .75; } .brain-fig .clutter circle { fill: var(--muted); opacity: .55; }
+.brain-fig .card-a .cardbg { stroke: var(--accent); } .brain-fig .card-b .cardbg { stroke: var(--text); }
+.brain-fig .inarr .sh { fill: none; stroke: var(--border); stroke-width: 1.5; stroke-linecap: round; } .brain-fig .inarr .hd { fill: var(--border); }
+.brain-fig .ff .sh { fill: none; stroke: var(--muted); stroke-width: 1.8; stroke-linecap: round; } .brain-fig .ff .hd { fill: var(--muted); }
+.brain-fig .fb { fill: none; stroke: var(--text); stroke-width: 1.5; stroke-dasharray: 4 4; stroke-linecap: round; opacity: .18; }
+.brain-fig .ring { fill: var(--bg); stroke: var(--muted); stroke-width: 1.6; } .brain-fig .core { fill: var(--muted); }
+.brain-fig .sig { opacity: 0; } .brain-fig .sig-a circle { fill: var(--accent); } .brain-fig .sig-b circle { fill: var(--text); }
+.brain-fig .pcard { opacity: 1; } .brain-fig .tag { opacity: 1; } .brain-fig .tag-a .sw { fill: var(--accent); } .brain-fig .tag-b .sw { fill: var(--text); }
+.brain-fig .tm { opacity: 0; } .brain-fig .tm-a circle { fill: var(--accent); } .brain-fig .tm-b circle { fill: var(--text); }
+.brain-fig .sw-e { fill: var(--accent); } .brain-fig .sw-h { fill: var(--text); }
+.brain-fig .t-ph.ph3 { opacity: 1; }
+@media (max-width: 640px) { .brain-fig .t-ttl { font-size: 15px; } .brain-fig .cortex .t-lb { font-size: 12px; } .brain-fig .t-ph { font-size: 12.5px; } }
+@keyframes bf-sig-a{0%,1%{opacity:0;transform:translate(350px,110px)}3%{opacity:1;transform:translate(350px,110px)}5%{opacity:1;transform:translate(322px,161px)}8%{opacity:1;transform:translate(287px,119px)}11%{opacity:1;transform:translate(231px,147px)}14%{opacity:1;transform:translate(150px,213px)}90%{opacity:(26, 0.45);transform:translate(150px,213px)}94%,100%{opacity:0;transform:translate(150px,213px)}}
+@keyframes bf-sig-b{0%,3%{opacity:0;transform:translate(350px,178px)}5%{opacity:1;transform:translate(350px,178px)}7%{opacity:1;transform:translate(322px,171px)}10%{opacity:1;transform:translate(287px,129px)}13%{opacity:1;transform:translate(231px,157px)}16%{opacity:1;transform:translate(150px,223px)}24%{opacity:1;transform:translate(150px,223px)}29%{opacity:1;transform:translate(231px,157px)}34%{opacity:1;transform:translate(287px,129px)}36%{opacity:1;transform:translate(287px,129px)}41%{opacity:1;transform:translate(231px,157px)}46%{opacity:1;transform:translate(150px,223px)}50%{opacity:1;transform:translate(150px,223px)}55%{opacity:1;transform:translate(231px,157px)}60%{opacity:1;transform:translate(287px,129px)}62%{opacity:1;transform:translate(287px,129px)}67%{opacity:1;transform:translate(231px,157px)}72%{opacity:1;transform:translate(150px,223px)}90%{opacity:1;transform:translate(150px,223px)}94%,100%{opacity:0;transform:translate(150px,223px)}}
+@keyframes bf-ring-v1{0%,4%{stroke:var(--muted)}5%,6%{stroke:var(--accent)}7%,10%{stroke:var(--text)}11%,100%{stroke:var(--muted)}}
+@keyframes bf-ring-v2{0%,7%{stroke:var(--muted)}8%,9%{stroke:var(--accent)}10%,13%{stroke:var(--text)}14%,33%{stroke:var(--muted)}34%,37%{stroke:var(--text)}38%,59%{stroke:var(--muted)}60%,63%{stroke:var(--text)}64%,100%{stroke:var(--muted)}}
+@keyframes bf-ring-v4{0%,10%{stroke:var(--muted)}11%,12%{stroke:var(--accent)}13%,16%{stroke:var(--text)}17%,28%{stroke:var(--muted)}29%,32%{stroke:var(--text)}33%,40%{stroke:var(--muted)}41%,44%{stroke:var(--text)}45%,54%{stroke:var(--muted)}55%,58%{stroke:var(--text)}59%,66%{stroke:var(--muted)}67%,70%{stroke:var(--text)}71%,100%{stroke:var(--muted)}}
+@keyframes bf-ring-it{0%,13%{stroke:var(--muted)}14%,15%{stroke:var(--accent)}16%,19%{stroke:var(--text)}20%,45%{stroke:var(--muted)}46%,49%{stroke:var(--text)}50%,71%{stroke:var(--muted)}72%,75%{stroke:var(--text)}76%,100%{stroke:var(--muted)}}
+@keyframes bf-ff1{0%,4%{stroke:var(--muted)}5%,6%{stroke:var(--accent)}7%,10%{stroke:var(--text)}11%,100%{stroke:var(--muted)}}
+@keyframes bf-ff2{0%,7%{stroke:var(--muted)}8%,9%{stroke:var(--accent)}10%,13%{stroke:var(--text)}14%,35%{stroke:var(--muted)}36%,39%{stroke:var(--text)}40%,61%{stroke:var(--muted)}62%,65%{stroke:var(--text)}66%,100%{stroke:var(--muted)}}
+@keyframes bf-ff3{0%,10%{stroke:var(--muted)}11%,12%{stroke:var(--accent)}13%,16%{stroke:var(--text)}17%,40%{stroke:var(--muted)}41%,44%{stroke:var(--text)}45%,66%{stroke:var(--muted)}67%,70%{stroke:var(--text)}71%,100%{stroke:var(--muted)}}
+@keyframes bf-fb1{0%,23%{opacity:.18}24%,29%{opacity:1}30%,49%{opacity:.18}50%,55%{opacity:1}56%,100%{opacity:.18}}
+@keyframes bf-fb2{0%,28%{opacity:.18}29%,34%{opacity:1}35%,54%{opacity:.18}55%,60%{opacity:1}61%,100%{opacity:.18}}
+@keyframes bf-pcard{0%,13%{opacity:0}17%,92%{opacity:1}96%,100%{opacity:0}}
+@keyframes bf-tag-a{0%,15%{opacity:0;transform:translateX(-6px)}19%,92%{opacity:1;transform:translateX(0)}96%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-tag-b{0%,72%{opacity:0;transform:translateX(-6px)}76%,92%{opacity:1;transform:translateX(0)}96%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-tm-a{0%,2%{opacity:0;transform:translateX(0)}3%{opacity:1;transform:translateX(0)}16%,90%{opacity:1;transform:translateX(57px)}94%,100%{opacity:0;transform:translateX(57px)}}
+@keyframes bf-tm-b{0%,2%{opacity:0;transform:translateX(0)}3%{opacity:1;transform:translateX(0)}74%,90%{opacity:1;transform:translateX(188px)}94%,100%{opacity:0;transform:translateX(188px)}}
+@keyframes bf-ph1{0%,2%{opacity:0}4%,20%{opacity:1}23%,100%{opacity:0}}
+@keyframes bf-ph2{0%,23%{opacity:0}26%,72%{opacity:1}75%,100%{opacity:0}}
+@keyframes bf-ph3{0%,75%{opacity:0}78%,90%{opacity:1}94%,100%{opacity:0}}
+@keyframes bf-cell-e0{0%,5%{opacity:0;transform:translateX(-8px)}8%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-h0{0%,7%{opacity:0;transform:translateX(-8px)}10%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-e1{0%,6%{opacity:0;transform:translateX(-8px)}9%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-h1{0%,15%{opacity:0;transform:translateX(-8px)}18%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-e2{0%,8%{opacity:0;transform:translateX(-8px)}11%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-h2{0%,23%{opacity:0;transform:translateX(-8px)}26%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-e3{0%,9%{opacity:0;transform:translateX(-8px)}12%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-h3{0%,31%{opacity:0;transform:translateX(-8px)}34%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-e4{0%,11%{opacity:0;transform:translateX(-8px)}14%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-h4{0%,39%{opacity:0;transform:translateX(-8px)}42%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-e5{0%,12%{opacity:0;transform:translateX(-8px)}15%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-h5{0%,47%{opacity:0;transform:translateX(-8px)}50%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-e6{0%,13%{opacity:0;transform:translateX(-8px)}16%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-h6{0%,56%{opacity:0;transform:translateX(-8px)}59%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-e7{0%,15%{opacity:0;transform:translateX(-8px)}18%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-h7{0%,64%{opacity:0;transform:translateX(-8px)}67%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-e8{0%,16%{opacity:0;transform:translateX(-8px)}19%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+@keyframes bf-cell-h8{0%,72%{opacity:0;transform:translateX(-8px)}75%,90%{opacity:1;transform:translateX(0)}94%,100%{opacity:0;transform:translateX(0)}}
+.brain-fig .sig-a{animation:bf-sig-a 8s linear infinite both} .brain-fig .sig-b{animation:bf-sig-b 8s linear infinite both}
+.brain-fig .nd-v1{animation:bf-ring-v1 8s linear infinite both}
+.brain-fig .nd-v2{animation:bf-ring-v2 8s linear infinite both}
+.brain-fig .nd-v4{animation:bf-ring-v4 8s linear infinite both}
+.brain-fig .nd-it{animation:bf-ring-it 8s linear infinite both}
+.brain-fig .ff1 .sh{animation:bf-ff1 8s linear infinite both}
+.brain-fig .ff2 .sh{animation:bf-ff2 8s linear infinite both}
+.brain-fig .ff3 .sh{animation:bf-ff3 8s linear infinite both}
+.brain-fig .fb1{animation:bf-fb1 8s linear infinite both}
+.brain-fig .fb2{animation:bf-fb2 8s linear infinite both}
+.brain-fig .pcard{animation:bf-pcard 8s linear infinite both} .brain-fig .tag-a{animation:bf-tag-a 8s ease-out infinite both} .brain-fig .tag-b{animation:bf-tag-b 8s ease-out infinite both}
+.brain-fig .tm-a{animation:bf-tm-a 8s linear infinite both} .brain-fig .tm-b{animation:bf-tm-b 8s linear infinite both}
+.brain-fig .ph1{animation:bf-ph1 8s linear infinite both} .brain-fig .ph2{animation:bf-ph2 8s linear infinite both} .brain-fig .ph3{animation:bf-ph3 8s linear infinite both}
+.brain-fig .cell-e0{animation:bf-cell-e0 8s ease-out infinite both} .brain-fig .cell-h0{animation:bf-cell-h0 8s ease-out infinite both}
+.brain-fig .cell-e1{animation:bf-cell-e1 8s ease-out infinite both} .brain-fig .cell-h1{animation:bf-cell-h1 8s ease-out infinite both}
+.brain-fig .cell-e2{animation:bf-cell-e2 8s ease-out infinite both} .brain-fig .cell-h2{animation:bf-cell-h2 8s ease-out infinite both}
+.brain-fig .cell-e3{animation:bf-cell-e3 8s ease-out infinite both} .brain-fig .cell-h3{animation:bf-cell-h3 8s ease-out infinite both}
+.brain-fig .cell-e4{animation:bf-cell-e4 8s ease-out infinite both} .brain-fig .cell-h4{animation:bf-cell-h4 8s ease-out infinite both}
+.brain-fig .cell-e5{animation:bf-cell-e5 8s ease-out infinite both} .brain-fig .cell-h5{animation:bf-cell-h5 8s ease-out infinite both}
+.brain-fig .cell-e6{animation:bf-cell-e6 8s ease-out infinite both} .brain-fig .cell-h6{animation:bf-cell-h6 8s ease-out infinite both}
+.brain-fig .cell-e7{animation:bf-cell-e7 8s ease-out infinite both} .brain-fig .cell-h7{animation:bf-cell-h7 8s ease-out infinite both}
+.brain-fig .cell-e8{animation:bf-cell-e8 8s ease-out infinite both} .brain-fig .cell-h8{animation:bf-cell-h8 8s ease-out infinite both}
+@media (prefers-reduced-motion: reduce) { .brain-fig * { animation: none !important; } }
+/* ---- end brain-fig ---- */
